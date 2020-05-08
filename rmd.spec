@@ -4,7 +4,8 @@ Release:        1%{?dist}
 Summary:        Resource Management Daemon-RMD
 License:        ASL 2.0
 URL:            https://github.com/intel/rmd
-Source0:        https://www.example.com/%{name}/releases/%{name}-%{version}.tar.gz
+Source0:        https://github.com/arunprabhu123/rmd/blob/master/rmd-1.0.tar.gz
+
 BuildRequires:  go
 BuildRequires:  make
 BuildRequires:  pam-devel
@@ -14,7 +15,7 @@ ExclusiveArch: %{ix86} x86_64
 
 
 %description
-RMD application
+Resource Management Daemon (RMD) is a system daemon running on Linux platforms
 
 %prep
 %setup -q
@@ -26,29 +27,69 @@ make %{?_smp_mflags}
 mkdir -p %{buildroot}/%{_bindir}/
 install -p -m 755 %{_builddir}/%{name}-%{version}/build/linux/x86_64/rmd %{buildroot}/%{_bindir}/
 install -p -m 755 %{_builddir}/%{name}-%{version}/build/linux/x86_64/gen_conf %{buildroot}/%{_bindir}/
-mkdir -p %{buildroot}/%{_bindir}/scripts
-cp -r  %{_builddir}/%{name}-%{version}/scripts/* %{buildroot}/%{_bindir}/scripts
-mkdir -p %{buildroot}/%{_bindir}/etc/rmd
-cp -r %{_builddir}/%{name}-%{version}/etc/rmd %{buildroot}/%{_bindir}/etc
 
+install -d %{buildroot}/%{_mandir}/man8
+install -m 0644  %{_builddir}/%{name}-%{version}/rmd.8 %{buildroot}/%{_mandir}/man8
+ln -sf %{_mandir}/man8/rmd.8 %{buildroot}/%{_mandir}/man8/gen_conf.8
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/install.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/setup_rmd_users.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/build.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/hacking.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/test.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/deps.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/hacking_v2.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/setup_pam_files.sh %{buildroot}/%{_prefix}/local/etc/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/build-opts-get %{buildroot}/%{_prefix}/local/etc/scripts/build-opts-get
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/go-env %{buildroot}/%{_prefix}/local/etc/scripts
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cpu_map.toml %{buildroot}/%{_prefix}/local/etc/rmd
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/policy.toml %{buildroot}/%{_prefix}/local/etc/rmd
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/policy.yaml %{buildroot}/%{_prefix}/local/etc/rmd
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/rmd.toml %{buildroot}/%{_prefix}/local/etc/rmd
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/acl/roles/admin
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/acl/roles/admin/cert.pem %{buildroot}/%{_prefix}/local/etc/rmd/acl/roles/admin
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/acl/roles/user
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/acl/roles/user/user-cert.pem %{buildroot}/%{_prefix}/local/etc/rmd/acl/roles/user
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/acl/url
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/acl/url/model.conf %{buildroot}/%{_prefix}/local/etc/rmd/acl/url
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/acl/url/policy.csv %{buildroot}/%{_prefix}/local/etc/rmd/acl/url
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/cert/client
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/client/ca.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/client
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/client/cert.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/client
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/client/key.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/client
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/client/user-cert.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/client
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/client/user-key.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/client
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/cert/server
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/server/ca.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/server
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/server/rmd-cert.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/server
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/cert/server/rmd-key.pem %{buildroot}/%{_prefix}/local/etc/rmd/cert/server
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/pam
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/pam/rmd %{buildroot}/%{_prefix}/local/etc/rmd/pam
+
+mkdir -p %{buildroot}/%{_prefix}/local/etc/rmd/pam/test
+install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/pam/test/rmd %{buildroot}/%{_prefix}/local/etc/rmd/pam/test
 
 %files
 %{_bindir}/%{name}
 %{_bindir}/gen_conf
-%config(missingok) %{_bindir}/scripts
-%config(missingok) %{_bindir}/etc
+%{_mandir}/man8/rmd.8.gz
+%{_mandir}/man8/gen_conf.8.gz
+%{_prefix}/local/etc/scripts
+%{_prefix}/local/etc/rmd
 %doc README.md
 %license LICENSE
 
 %post
-%{_bindir}/scripts/install.sh --skip-pam-userdb
-rm -rf %{_bindir}/scripts
-rm -rf %{_bindir}/etc
-
-%preun
-rm -rf /etc/rmd/pam/rmd_users.db
-rm -rf /usr/local/etc/rmd
-rm -rf /var/run/rmd
+%{_prefix}/local/etc/scripts/install.sh --skip-pam-userdb
 
 %changelog
 * Tue Jan 07 2020 ArunPrabhu Vijayan <arunprabhu.vijayan@intel.com> - 1.0-1
