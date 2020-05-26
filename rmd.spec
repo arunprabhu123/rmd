@@ -5,7 +5,7 @@ Summary:        Resource Management Daemon-RMD
 License:        ASL 2.0
 URL:            https://github.com/intel/rmd
 Source0:        https://github.com/arunprabhu123/rmd/blob/master/rmd-1.0.tar.gz
-Source1:	    rmd-extra.pkg.tar.gz
+Source1:        rmd-extra.pkg.tar.gz
 BuildRequires:  go
 BuildRequires:  make
 BuildRequires:  pam-devel
