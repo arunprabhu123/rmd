@@ -5,7 +5,7 @@ Summary:        Resource Management Daemon-RMD
 License:        ASL 2.0
 URL:            https://github.com/intel/rmd
 Source0:        https://github.com/arunprabhu123/rmd/blob/master/rmd-1.0.tar.gz
-
+Source1:	    rmd-extra.pkg.tar.gz
 BuildRequires:  go
 BuildRequires:  make
 BuildRequires:  pam-devel
@@ -62,7 +62,12 @@ hardware resource management tasks on x86 platforms.
 %prep
 %setup -q
 
+mkdir app 
 %build
+mkdir _pkg
+tar -C _pkg -x -v -f %{SOURCE1}
+find _pkg -type d -exec chmod 755 {} \;
+export GOPATH=$PWD/_pkg/packages:/usr/lib/golang
 make %{?_smp_mflags}
 
 %install
