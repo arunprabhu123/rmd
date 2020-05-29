@@ -82,8 +82,8 @@ install -d %{buildroot}/%{_mandir}/man8
 install -m 0644  %{_builddir}/%{name}-%{version}/rmd.8 %{buildroot}/%{_mandir}/man8
 ln -sf %{_mandir}/man8/rmd.8 %{buildroot}/%{_mandir}/man8/gen_conf.8
 
-mkdir -p %{buildroot}/%{_sysconfdir}/%{name}/scripts
-install -m 755  %{_builddir}/%{name}-%{version}/scripts/setup_rmd_users.sh %{buildroot}/%{_sysconfdir}/%{name}/scripts
+mkdir -p %{buildroot}/%{_datadir}/%{name}/scripts
+install -m 755  %{_builddir}/%{name}-%{version}/scripts/setup_rmd_users.sh %{buildroot}/%{_datadir}/%{name}/scripts
 
 mkdir -p %{buildroot}/%{_unitdir}
 install -m 644 %{_builddir}/%{name}-%{version}/scripts/%{name}.service %{buildroot}/%{_unitdir}
@@ -133,7 +133,7 @@ install -m 0644  %{_builddir}/%{name}-%{version}/etc/rmd/pam/test/rmd %{buildroo
 %config(noreplace)  %{_sysconfdir}/rmd/*.yaml
 %config(noreplace)  %{_sysconfdir}/rmd/pam/test/rmd
 %config(noreplace)  %{_sysconfdir}/rmd/pam/rmd
-%{_sysconfdir}/rmd/scripts/*.sh
+%{_datadir}/%{name}/
 %doc README.md UserGuide.md 
 %license LICENSE
 %{_unitdir}/%{name}.service
@@ -169,7 +169,6 @@ gen_conf -path /etc/rmd/rmd.toml -data "{$DATA}"
 %preun 
 %systemd_preun %{name}.service
 USER="rmd"
-userdel $USER || echo "User rmd Deleted"
 rm -rf /var/log/rmd/
 rm -rf /var/run/rmd/
 rm -rf /etc/pam.d/rmd
